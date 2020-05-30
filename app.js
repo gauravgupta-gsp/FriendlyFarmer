@@ -8,6 +8,8 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 
+const {parse} =require("querystring");
+
 
 
 const app = express();
@@ -15,6 +17,8 @@ const app = express();
 const port = 3001;
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
+
 app.use(express.static("public"));
 
 app.use(session({
@@ -50,6 +54,12 @@ db.once("open" , () => {
 const itemSchema = new mongoose.Schema( {
       name:String
    });
+
+  const farmerSellingList = new mongoose.Schema({
+    name:String,
+    price: Number,
+    minQty: Number
+  });
 
   const farmerSchema = new mongoose.Schema({
     name:String,
@@ -97,10 +107,37 @@ app.get("/login", (req, res)=> {
 });
 
 
-app.post("/saveFarmerList", (req,res) => {
+app.post("/saveFarmerItemList", (req,res) => {
 
-    // console.log(req);
-    console.log(req.body);
+// var items = req.body.data.split(",");
+// console.log(req.body.data);
+// console.log(req.body.data.split(","));
+let obj = JSON.parse(req.body.data);
+console.log(obj.length);
+obj.forEach(function (item) {
+  console.log(item.Id + " "+ item.price + " "+ item.minQty);
+});
+// let body ='';
+// req.on('data', chunk => {body+=chunk.toString()} );
+// req.on('end', ()=> {console.log(parse(body.data)  ) ;
+//   res.end('ok') ;
+//
+//
+//
+//
+//
+// }) ;
+
+  // let data = String(req.body);
+  // let newData = data.substring(  0, data.length -3);
+  //
+  //   console.log(newData);
+
+    // console.log( req.body);
+
+
+
+
 
 });
 
@@ -133,8 +170,11 @@ app.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+
 app.post("/login", (req, res) => {
   const username= req.body.username;
+  console.log("username "+ username);
   const farmer = new Farmer({
     username:req.body.username,
     password:req.body.password
@@ -142,7 +182,7 @@ app.post("/login", (req, res) => {
 
   req.login(farmer,function (err) {
     if(err) {
-      console.log(err);
+      console.log("Error "+ err);
     }
     else {
       passport.authenticate("local")(req, res, function() {

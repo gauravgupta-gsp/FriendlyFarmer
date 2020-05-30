@@ -1,13 +1,14 @@
 <%- include("partials/header") -%>
 
-<h1 style="text-align="center">Welcome to your shop <%=farmer.username%></h1>
+<h1 style="text-align="center">Welcome to your shop <%=farmer%></h1>
 <a class="btn btn-dark btn-lg" href="/createShop" role="button">Create your Shop</a>
 <a class="btn btn-dark btn-lg" href="/logout" role="button" > Log Out </a>
 
 <div class="">
 
 
-<form action="" method="POST" onsubmit="return validateItem()">
+<form action="/saveFarmerItemList" method="POST" onsubmit="return validateItem()">
+  <input type="text" id="data" name="data" value="">
 
     <table class="table">
         <thead>
