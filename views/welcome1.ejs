@@ -1,0 +1,47 @@
+<%- include("partials/header") -%>
+<h1>Welcome to your shop <%=username%> </h1>
+
+<form id="saveWiFiConfigFrm" method="POST" >
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Min Quantity</th>
+
+            </tr>
+            <tbody id="tBodyItemList">
+                <% itemList.forEach( (item, index) => { %>
+                   <tr>
+                        <th scope="row"><%= index+1 %></th>
+                        <td><%= item.name  %></td>
+
+                        <td><input type="number"  id="price_<%=  item._id %>"     class="form-control" name="price" value=<%= item.price  %> /></td>
+
+                        <td><input type="number" id="minQty_<%= item._id %>" class="form-control" name="minQuantity" value=<%= item.minQty  %> /></td>
+
+                    </tr>
+                <% }) %>
+            </tbody>
+
+        </thead>
+    </table>
+    <button id="btn" class="btn btn-dark">Submit</button>
+</form>
+
+
+$(document).ready(function() {
+    $('#btn').click(function() {
+        console.log("dddd");
+        $('#tBodyItemList').find('tr').each(function() {
+console.log($(this));
+        });
+    });
+
+<!-- }); -->
+
+
+
+  <%- include("partials/footer") -%>

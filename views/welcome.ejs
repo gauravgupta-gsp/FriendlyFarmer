@@ -1,0 +1,43 @@
+<%- include("partials/header") -%>
+
+<h1 style="text-align="center">Welcome to your shop <%=farmer.username%></h1>
+<a class="btn btn-dark btn-lg" href="/createShop" role="button">Create your Shop</a>
+<a class="btn btn-dark btn-lg" href="/logout" role="button" > Log Out </a>
+
+<div class="">
+
+
+<form action="" method="POST" onsubmit="return validateItem()">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Min Quantity</th>
+
+            </tr>
+            <tbody id="tBodyItemList">
+              <% itemList.forEach( (item, index) => { %>
+                 <tr id=<%=  item._id %>>
+                      <td scope="row"><%= index+1 %></td>
+                      <td><%= item.name  %></td>
+
+                      <td><input type="number"       class="form-control" name="price" value="0" /></td>
+
+                      <td><input type="number" class="form-control" name="minQuantity"   value="0" /></td>
+
+                  </tr>
+              <% }) %>
+            </tbody>
+
+        </thead>
+    </table>
+    <button id="btn"  class="btn btn-dark">Submit</button>
+</form>
+</div>
+
+
+
+  <%- include("partials/footer") -%>

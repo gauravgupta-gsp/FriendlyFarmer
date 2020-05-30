@@ -1,0 +1,8 @@
+<%- include("partials/header") -%>
+
+<% farmerList.forEach( (farmer, index) => { %>
+  <a class="btn btn-dark btn-lg" href="/<%=farmer.username%>" role="button"><%=farmer.username%></a>
+
+<%}); %>
+
+<%- include("partials/footer") -%>
