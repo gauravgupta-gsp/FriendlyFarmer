@@ -1,4 +1,51 @@
 <%- include("partials/header") -%>
 <h1><%=farmer.username%> Shop</h1>
 
+<%if (farmer.sellingList.length > 0) { %>
+  <div class="">
+  <form action="/placeOrder" method="POST" onsubmit="return validateOrder()">
+    <input type="text" id="data" name="data" value="">
+    <input type="text" id="farmerName" name="farmerName" value="<%=farmer.username%>">
+      <table class="table">
+          <thead>
+              <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Item Name</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Min Quantity</th>
+                  <th scope="col">Purchase Quantity</th>
+
+              </tr>
+              <tbody id="tBodyItemList">
+                  <% farmer.sellingList.forEach( (item, index) => { %>
+                     <tr id=<%=  item.itemId %>>
+                          <td scope="row"><%= index+1 %></td>
+
+                          <td><input type="text" class="form-control" name="itemName" value="<%= item.itemName  %>"  readonly /></td>
+
+                          <td><input type="number" class="form-control" name="price" value="<%= item.price %>" readonly /></td>
+
+                          <td><input type="number" class="form-control" name="minQuantity"   value="<%= item.minQty  %>" readonly /></td>
+                          <td><input type="number" class="form-control" name="purchaseQuantity"   value="0" /></td>
+
+                      </tr>
+                  <% }) %>
+              </tbody>
+          </thead>
+      </table>
+
+      <input type="text" class="form-control" name="customerName" placeholder="Your Name"  value="" />
+      <input type="text" class="form-control" name="customerMobile" placeholder="Your Mobile "  value="" />
+      <input type="text" class="form-control" name="customerSociety" placeholder="Your Society"  value="" />
+      <button id="btn"  class="btn btn-dark">Submit</button>
+  </form>
+  </div>
+
+
+<% } else { %>
+
+  <p> <%=farmer.username%> is not currently accepting any order. For more queries Please contact <%=farmer.mobile%>
+
+    </p>
+<%}%>
 <%- include("partials/footer") -%>

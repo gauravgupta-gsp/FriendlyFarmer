@@ -31,9 +31,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-
 const mongoUrl = "mongodb://localhost:27017/FarmerDB"
-
 
 mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
@@ -55,16 +53,41 @@ const itemSchema = new mongoose.Schema( {
       name:String
    });
 
-  const farmerSellingList = new mongoose.Schema({
-    name:String,
+  const sellingItemSchema = new mongoose.Schema({
+    itemId: String,
+    itemName:String,
     price: Number,
     minQty: Number
   });
 
+  const orderDetailSchema = new mongoose.Schema({
+    itemId: String,
+    itemName:String,
+    price: Number,
+    purchaseQty: Number
+  });
+
+  const OrderDetail = mongoose.model("OrderDetail", orderDetailSchema);
+
+  const orderSchema =  new mongoose.Schema({
+    customerName:String,
+    customerMobile: String,
+    society:String,
+    isDelivered:Boolean,
+    orderDetail:[orderDetailSchema]
+  });
+
+  const Order = mongoose.model("Order", orderSchema);
+
+const SellingItem = mongoose.model("SellingItem", sellingItemSchema);
+
   const farmerSchema = new mongoose.Schema({
     name:String,
     mobile:String,
-    password: String
+    password: String,
+    sellingList: [sellingItemSchema],
+    orderList:[orderSchema]
+
   });
 
   farmerSchema.plugin(passportLocalMongoose);
@@ -107,16 +130,163 @@ app.get("/login", (req, res)=> {
 });
 
 
+app.post("/placeOrder", (req,res) => {
+  let farmerName = req.body.farmerName;
+  let dataObject = JSON.parse(req.body.data);
+  let customerName = req.body.customerName;
+  let customerSociety = req.body.customerSociety;
+  let customerMobile = req.body.customerMobile;
+
+  Farmer.findOne({username:farmerName}, (err,foundFarmer)=> {
+      if(!err && foundFarmer ) {
+
+        const orderDetailsList = [];
+        let purchaseOrder = new Order({
+          customerName:customerName,
+          customerMobile: customerMobile,
+         society:customerSociety,
+          isDelivered:false,
+          orderDetail:[]
+
+        });
+        dataObject.forEach(function (item) {
+          console.log(item.id + " "+item.itemName+" " +item.price + " "+ item.purchaseQty);
+
+          let currentOrder = new OrderDetail({
+            itemId: item.id,
+            itemName:item.itemName,
+            price: item.price,
+            purchaseQty: item.purchaseQty
+          });
+
+          orderDetailsList.push(currentOrder);
+
+
+          currentOrder.save(err => {
+            if(err) {
+              console.log("error while saveing order details "+ err);
+            }
+            else {
+              console.log("oreder details  saved ");
+            }
+          });
+        });
+
+        purchaseOrder.orderDetail=orderDetailsList;
+        purchaseOrder.save(err=> {
+          if(err) {
+            console.log("error while saveing purchaseOrder "+ err);
+          }
+          else {
+            console.log("p o saved ");
+          }
+        });
+
+foundFarmer.orderList.push(purchaseOrder);
+foundFarmer.save(err=> {
+  if(!err) {
+    res.render("orderConfirmation", {message:"failure",customerName:customerName,orderReceived: dataObject ,farmer:foundFarmer});
+  }
+  else {
+    res.render("orderConfirmation", {message:"failure", customerName:customerName,orderReceived: dataObject ,farmer:foundFarmer});
+  }
+});
+
+
+        // Farmer.insert({username:farmerName}, {orderList:orderList}, function(err) {
+        //   if(!err) {
+        //     console.log("successfully inserted itemlist");
+        //     // Farmer.find({username:farmerName}, (err,foundFarmer)=>  {
+        //     //   if(!err && foundFarmer ) {
+        //     //     res.render("orderConfirmation", {customerName:customerName,orderReceived: dataObject ,farmer:foundFarmer});
+        //     //   }
+        //     // })
+        //
+        //   }
+        //   else {
+        //     console.log(err);
+        //   }
+        // });
+
+
+      } else {
+        console.log("match found" + foundFarmer);
+        res.render("shop", {farmer:foundFarmer});
+        // res.redirect("/"+username);
+      }
+    });
+
+
+console.log(dataObject);
+
+});
+
+
+
 app.post("/saveFarmerItemList", (req,res) => {
 
-// var items = req.body.data.split(",");
-// console.log(req.body.data);
-// console.log(req.body.data.split(","));
-let obj = JSON.parse(req.body.data);
-console.log(obj.length);
-obj.forEach(function (item) {
-  console.log(item.Id + " "+ item.price + " "+ item.minQty);
-});
+let farmerName = req.body.farmerName;
+let dataObject = JSON.parse(req.body.data);
+
+Farmer.findOne({username:farmerName}, (err,foundFarmer)=> {
+    if(!err && foundFarmer ) {
+      console.log("farmer found :" + foundFarmer);
+      const itemList = [];
+      dataObject.forEach(function (item) {
+        console.log(item.id + " "+item.itemName+" " +item.price + " "+ item.minQty);
+        let sellingItem = new SellingItem({
+          itemId: item.id,
+          itemName:item.itemName,
+          price: item.price,
+          minQty: item.minQty
+        });
+
+        itemList.push(sellingItem);
+        console.log("Item list length : " + itemList.length);
+        sellingItem.save();
+      });
+
+      Farmer.updateOne({username:farmerName}, {sellingList:itemList}, function(err) {
+        if(!err) {
+          console.log("successfully inserted itemlist");
+          Farmer.find({username:farmerName}, (err,foundFarmer)=>  {
+            if(!err && foundFarmer ) {
+              res.render("welcome", {listExist: true, farmer:farmerName,itemList: [] ,farmer:foundFarmer});
+            }
+          })
+
+        }
+        else {
+          console.log(err);
+        }
+      });
+
+
+    } else {
+      console.log("match found" + foundFarmer);
+      res.render("shop", {farmer:foundFarmer})
+      // res.redirect("/"+username);
+    }
+  });
+
+
+// console.log(obj.length);
+
+// obj.forEach(function (item) {
+//   console.log(item.id + " "+item.itemName+" " +item.price + " "+ item.minQty);
+//   let sellingItem = new SellingItem({
+//     itemId: item.id,
+//     itemName:item.itemName,
+//     price: item.price,
+//     minQty: item.minQty
+//   });
+//   sellingItem.save();
+// });
+
+
+
+
+
 // let body ='';
 // req.on('data', chunk => {body+=chunk.toString()} );
 // req.on('end', ()=> {console.log(parse(body.data)  ) ;
@@ -186,18 +356,41 @@ app.post("/login", (req, res) => {
     }
     else {
       passport.authenticate("local")(req, res, function() {
-        Item.find({},  function (err, foundItems) {
-           if(foundItems.length === 0 ) {
-             Item.insertMany(defaultItems, (err) => {
-               if(err) {
-                 console.log(err);
-               }else {
-                 console.log("Successfully inserted items in db");
-               }
-             });
-           }
-           res.render("welcome", {farmer:username, itemList: foundItems});
-         });
+
+        Farmer.findOne({username:username}, (err,foundFarmer)=>  {
+          if(!err && foundFarmer ) {
+            console.log(foundFarmer.sellingList.length);
+            // console.log(foundFarmer.sellingList);
+            // console.log(JSON.parse(foundFarmer.sellingList));
+            if(foundFarmer.sellingList.length > 0) {
+              // selling list
+
+              res.render("welcome", {listExist: true,farmer:username, itemList: foundFarmer.sellingList});
+
+            }
+            else {
+              // item list
+              Item.find({},  function (err, foundItems) {
+                 if(foundItems.length === 0 ) {
+                   Item.insertMany(defaultItems, (err) => {
+                     if(err) {
+                       console.log(err);
+                     }else {
+                       console.log("Successfully inserted items in db");
+                     }
+                   });
+                 }
+                 res.render("welcome", {listExist: false,farmer:username, itemList: foundItems});
+               });
+            }
+
+          }
+        })
+
+
+
+
+
 
       });
     }
@@ -239,14 +432,13 @@ app.get("/:username", (req, res) => {
   console.log(username);
   Farmer.findOne({username:username}, (err,foundFarmer)=> {
     if(!err && !foundFarmer ) {
-      console.log("farmer with specified name not found" + foundFarmer);
       Farmer.find((err,foundFarmers) => {
         res.render("farmerList", {farmerList: foundFarmers});
       });
     } else {
-      console.log("match found" + foundFarmer);
+
       res.render("shop", {farmer:foundFarmer})
-      // res.redirect("/"+username);
+
     }
   });
 });
