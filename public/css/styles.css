@@ -25,3 +25,43 @@ body {
     color: #fff;
     background-color: #000;
   }
+
+table {
+  border: 1px solid black;
+  cellpadding:"15"
+}
+   th {
+    border: 1px solid black;
+  }
+
+  td {
+    padding: 10px;
+    border: 1px solid black;
+  }
+
+  form {
+  margin: 0 auto;
+  width:650px;
+  }
+
+  footer {
+    margin-top: 50px;
+    text-align: center;
+    background-color: #77B81E;
+    color: white;
+  }
+  a:link {
+    text-decoration: none;
+  }
+
+  a:visited {
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  a:active {
+    text-decoration: underline;
+  }

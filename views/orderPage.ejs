@@ -1,0 +1,76 @@
+<%- include("partials/header") -%>
+<h1><%=farmer.username%> Order List</h1>
+
+
+<!-- iterate orderlist -->
+<div class="container-fluid" >
+  <% farmer.orderList.forEach((order, index) => { %>
+    <form class="" action="/updateOrder" method="post" >
+      <input type="text" name="orderId" value="<%=order._id%>">
+      <table >
+        <div class="" style="text-align:center">
+          <br>
+          <b>Order No <%= index + 1%></b>
+
+        </div>
+
+        <tr>
+          <thead>
+            <th>Customer Name</th>
+            <th>Customer Mobile</th>
+            <th>Customer Society</th>
+          </thead>
+        </tr>
+
+          <tr id="<%=order._id%>">
+
+            <td><label for="">  <%=order.customerName %> </label></td>
+            <td><label for="">  <%=order.customerMobile %> </label></td>
+            <td><label for="">  <%=order.society %> </label></td>
+            <td><button type="button" class="btn btn-primary" name="button">Mark as Delivered</button></td>
+          </tr>
+          <!-- <tr> -->
+
+          <!-- </tr> -->
+          <tr>
+
+
+          </tr>
+          <tr>
+            <td><b> # </b></td>
+            <td><b> Item Name </b></td>
+            <td><b>Item Price </b></td>
+            <td><b>Order Quantity</b></td>
+          </tr>
+
+          <%  order.orderDetail.forEach((orderDetail,index) => { %>
+
+            <tr>
+              <td><%= index + 1%></td>
+              <td><%=orderDetail.itemName %></td>
+              <td><%=orderDetail.price %></td>
+              <td><%=orderDetail.purchaseQty %></td>
+            </tr>
+            <br>
+
+            <%  }); %>
+
+      </table>
+
+
+
+    </form>
+
+
+
+
+
+<%  }); %>
+
+</div>
+
+
+
+
+
+<%- include("partials/footer") -%>

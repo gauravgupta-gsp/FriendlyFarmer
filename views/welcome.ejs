@@ -1,21 +1,18 @@
 <%- include("partials/header") -%>
 
-<h1 style="text-align="center">Welcome to your shop <%=farmer%></h1>
-<a class="btn btn-dark btn-lg" href="/createShop" role="button">Create your Shop</a>
-<a class="btn btn-dark btn-lg" href="/logout" role="button" > Log Out </a>
+<h1 style="text-align="center">Welcome to your shop <%=farmerName%></h1>
+<!-- <a class="btn btn-dark btn-lg" href="/createShop" role="button">Create your Shop</a> -->
+<a class="btn btn-dark btn-lg" href="/orders/<%=farmerName%>" role="button" > View Orders </a>
 
 <div class="">
 
 
 <form action="/saveFarmerItemList" method="POST" onsubmit="return validateItem()">
   <input type="text" id="data" name="data" value="">
-  <input type="text" id="farmerName" name="farmerName" value="<%=farmer%>">
+  <input type="text" id="farmerName" name="farmerName" value="<%=farmerName%>">
  <p><%=listExist %></p>
 
 
- <%if (listExist) { %>
- <p>hitesh gupta</p>
- <% } %>
 
     <table class="table">
         <thead>

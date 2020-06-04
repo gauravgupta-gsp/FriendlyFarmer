@@ -4,8 +4,8 @@
 <%if (farmer.sellingList.length > 0) { %>
   <div class="">
   <form action="/placeOrder" method="POST" onsubmit="return validateOrder()">
-    <input type="text" id="data" name="data" value="">
-    <input type="text" id="farmerName" name="farmerName" value="<%=farmer.username%>">
+    <input type="hidden" id="data" name="data" value="">
+    <input type="hidden" id="farmerName" name="farmerName" value="<%=farmer.username%>">
       <table class="table">
           <thead>
               <tr>
@@ -34,9 +34,21 @@
           </thead>
       </table>
 
-      <input type="text" class="form-control" name="customerName" placeholder="Your Name"  value="" />
-      <input type="text" class="form-control" name="customerMobile" placeholder="Your Mobile "  value="" />
-      <input type="text" class="form-control" name="customerSociety" placeholder="Your Society"  value="" />
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <input type="text" class="form-control" name="customerName" placeholder="Your Name"  value="" />
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" name="customerMobile" placeholder="Your Mobile "  value="" />
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" name="customerSociety" placeholder="Your Society"  value="" />
+          </div>
+
+        </div>
+      </div>
+
       <button id="btn"  class="btn btn-dark">Submit</button>
   </form>
   </div>
