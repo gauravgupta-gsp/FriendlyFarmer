@@ -12,6 +12,12 @@ function validateRegister() {
   return true;
 }
 
+function nospaces(t){
+  if(t.value.match(/\s/g)){
+    t.value=t.value.replace(/\s/g,'');
+  }
+}
+
 function validateOrder() {
   var itemArray = [];
   $('#tBodyItemList').find('tr').each(function() {
@@ -51,7 +57,7 @@ function validateItem() {
 
     finalData = {
       "data": itemArray
-    };    
+    };
   });
 
   return true;

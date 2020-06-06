@@ -434,7 +434,8 @@ app.post("/login", (req, res) => {
               res.render("welcome", {
                 listExist: true,
                 farmerName: username,
-                itemList: foundFarmer.sellingList
+                itemList: foundFarmer.sellingList,
+                message:""
               });
 
             } else {
@@ -452,7 +453,9 @@ app.post("/login", (req, res) => {
                 res.render("welcome", {
                   listExist: false,
                   farmerName: username,
-                  itemList: foundItems
+                  itemList: foundItems,
+                  message:"Setup your Shop"
+
                 });
               });
             }
@@ -493,7 +496,8 @@ app.post("/register", function(req, res) {
           res.render("welcome", {
             farmerName: username,
             itemList: foundItems,
-            listExist: false
+            listExist: false,
+            message:"Enter price and Min Quantity for items you sell.."
           });
         });
 
