@@ -420,8 +420,8 @@ app.post("/login", (req, res) => {
     if (err) {
       console.log("Error " + err);
     } else {
-      // passport.authenticate("local")(req, res, function() {
-      passport.authenticate("local")( function(req, res) {
+      passport.authenticate("local")(req, res, function() {
+      // passport.authenticate("local")( function(req, res) {
 
         Farmer.findOne({username: username}, (err, foundFarmer) => {
           if (!err && foundFarmer) {
