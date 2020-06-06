@@ -3,14 +3,15 @@
 <h1 style="text-align="center">Welcome to your shop <%=farmerName%></h1>
 <!-- <a class="btn btn-dark btn-lg" href="/createShop" role="button">Create your Shop</a> -->
 <a class="btn btn-dark btn-lg" href="/orders/<%=farmerName%>" role="button" > View Orders </a>
+<a class="btn btn-dark btn-lg" href="/reset/<%=farmerName%>" role="button" > Reset Selling Items </a>
 
 <div class="">
 
 
 <form action="/saveFarmerItemList" method="POST" onsubmit="return validateItem()">
-  <input type="text" id="data" name="data" value="">
-  <input type="text" id="farmerName" name="farmerName" value="<%=farmerName%>">
- <p><%=listExist %></p>
+  <input type="hidden" id="data" name="data" value="">
+  <input type="hidden" id="farmerName" name="farmerName" value="<%=farmerName%>">
+
 
 
 

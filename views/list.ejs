@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="css/list.css">
+</head>
+
+<body>
+
+  <div class="box" id="heading">
+    <h1> Manage List of Items </h1>
+  </div>
+
+  <div class="box">
+
+    <%listItems.forEach((item) => { %>
+      <form  action="/delete" method="post">
+        <div class="item">
+          <input type="checkbox" name="checkbox" onChange="this.form.submit()" value=<%= item._id%> >
+          <p><%=  item.name  %></p>
+        </div>
+
+      </form>
+
+    <%});%>
+
+      <form class="item" action="/addItem" method="post">
+        <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
+        <button type="submit" name="listName"  >+</button>
+      </form>
+  </div>
+
+
+</body>
+
+<footer>
+  <p>Copyright 2020 Powered by <a href="https://okgreen.in/">OkGreen.in</a></p>
+</footer>
+
+</html>

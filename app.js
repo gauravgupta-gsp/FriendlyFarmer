@@ -8,6 +8,9 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 
+var PassportHerokuAddon = require('passport-heroku-addon');
+
+
 const {
   parse
 } = require("querystring");
@@ -16,7 +19,7 @@ const {
 
 const app = express();
 // app.use(cors());
-const port = 3001;
+// const port = 3001;
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({
   extended: true
@@ -36,8 +39,8 @@ app.use(passport.session());
 
 
 const mongoUrl = "mongodb://localhost:27017/FarmerDB"
-
-mongoose.connect(mongoUrl, {
+const urlAtlas = "mongodb+srv://admin-gaurav:Rssbdb@1@cluster0-4uxnp.mongodb.net/farmerDB?retryWrites=true&w=majority";
+mongoose.connect(urlAtlas, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
@@ -58,6 +61,8 @@ const itemSchema = new mongoose.Schema({
 });
 
 const sellingItemSchema = new mongoose.Schema({
+  farmerName:String,
+  farmerId:String,
   itemId: String,
   itemName: String,
   price: Number,
@@ -113,21 +118,13 @@ passport.deserializeUser(function(user, done) {
 
 const Item = mongoose.model("Item", itemSchema);
 
-const maize = new Item({
-  name: "maize"
-});
+const maize = new Item({  name: "maize"});
 
-const onion = new Item({
-  name: "Onion"
-});
+const onion = new Item({  name: "Onion"});
 
-const tomato = new Item({
-  name: "Tomato"
-});
+const tomato = new Item({  name: "Tomato"});
 
-const wheat = new Item({
-  name: "wheat"
-});
+const wheat = new Item({  name: "wheat"});
 const defaultItems = [maize, onion, tomato, wheat]
 
 
@@ -144,7 +141,18 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/updateOrder", (req,res)=> {
-  console.log(req.body.orderId);
+  const orderId= req.body.orderId;
+  const farmerName = req.body.farmerName;
+
+  Order.updateOne({_id:orderId}, {isDelivered:true}, err =>{
+    if(!err) {
+      Order.find({farmerName:farmerName, isDelivered:false}, (err, orderList) => {
+        // console.log("order list for "+ orderList);
+        res.render("orderPage", {farmer:foundFarmer,orderList:orderList});
+      });
+
+    }
+  });
 })
 app.post("/placeOrder", (req, res) => {
   let farmerName = req.body.farmerName;
@@ -228,10 +236,40 @@ app.post("/placeOrder", (req, res) => {
       // res.redirect("/"+username);
     }
   });
-
-
   console.log(dataObject);
 
+});
+
+app.post("/delete", (req, res) => {
+  const checkedItemId = req.body.checkbox;
+
+  Item.deleteOne({_id:checkedItemId} , err => {
+    if(!err) {
+      res.redirect("/compose");
+    }
+  });
+});
+
+app.post("/addItem", (req,res) =>{
+  const newItem = req.body.newItem;
+  const item = new Item({name:newItem});
+  item.save();
+  res.redirect("/compose");
+});
+
+app.get("/compose", (req,res) => {
+  Item.find({},  function (err, foundItems) {
+    if(foundItems.length === 0 ) {
+      Item.insertMany(defaultItems, (err) => {
+        if(err) {
+          console.log(err);
+        }else {
+          console.log("Successfully inserted items in db");
+        }
+      });
+    }
+    res.render("list", {listItems: foundItems});
+  });
 });
 
 
@@ -250,6 +288,8 @@ app.post("/saveFarmerItemList", (req, res) => {
       dataObject.forEach(function(item) {
         // console.log(item.id + " " + item.itemName + " " + item.price + " " + item.minQty);
         let sellingItem = new SellingItem({
+          farmerName:farmerName,
+          farmerId:foundFarmer.Id,
           itemId: item.id,
           itemName: item.itemName,
           price: item.price,
@@ -295,8 +335,6 @@ app.post("/saveFarmerItemList", (req, res) => {
       // res.redirect("/"+username);
     }
   });
-
-
 });
 
 app.get("/welcome", (req, res) => {
@@ -325,14 +363,39 @@ app.get("/createShop", (req, res) => {
   });
 });
 
+app.get("/reset/:farmerName", (req,res) => {
+  const farmerName = req.body.params;
+  SellingItem.deleteMany({farmerName:farmerName}, err=> {
+    if(!err) {
+      Item.find({}, function(err, foundItems) {
+        if (foundItems.length === 0) {
+          Item.insertMany(defaultItems, (err) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully inserted items in db");
+            }
+          });
+        }
+
+        res.render("welcome", {
+          farmerName: farmerName,
+          itemList: foundItems,
+          listExist: false
+        });
+      });
+    }
+  });
+});
 app.get("/orders/:farmerName", (req,res) => {
 // console.log(req.params.farmerName);
 const farmerName = req.params.farmerName;
 Farmer.findOne({username:farmerName}, (err, foundFarmer) => {
   Order.find({farmerName:farmerName, isDelivered:false}, (err, orderList) => {
-    console.log("order list for "+ orderList);
+    // console.log("order list for "+ orderList);
+    res.render("orderPage", {farmer:foundFarmer.username, orderList:orderList});
   });
-  res.render("orderPage", {farmer:foundFarmer});
+
 });
 
 });
@@ -413,6 +476,7 @@ app.post("/register", function(req, res) {
       res.redirect("/register");
     } else {
       passport.authenticate("local")(req, res, function() {
+        console.log("registed");
 
         Item.find({}, function(err, foundItems) {
           if (foundItems.length === 0) {
@@ -461,6 +525,11 @@ app.get("/:username", (req, res) => {
     }
   });
 });
+
+let port = process.env.PORT;
+if(port == null || port == "") {
+  port =3000;
+}
 app.listen(port, () => {
   console.log(`Friendly App running at port ${port}`);
 });

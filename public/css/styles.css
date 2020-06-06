@@ -3,7 +3,11 @@
 } */
 
 h1 {
+
+  background-color: #A683E3;
   text-align: center;
+  color: #fff;
+  padding: 10px;
 }
 
 h3 {
@@ -50,18 +54,24 @@ table {
     background-color: #77B81E;
     color: white;
   }
-  a:link {
-    text-decoration: none;
+a { color: #FFF; }
+
+  .item {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #F1F1F1;
   }
 
-  a:visited {
-    text-decoration: none;
+  .item:last-child {
+    border-bottom: 0;
   }
 
-  a:hover {
-    text-decoration: underline;
+  input:checked+p {
+    text-decoration: line-through;
+    text-decoration-color: #A683E3;
   }
 
-  a:active {
-    text-decoration: underline;
+  input[type="checkbox"] {
+    margin: 20px;
   }

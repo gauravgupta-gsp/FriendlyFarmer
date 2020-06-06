@@ -37,21 +37,12 @@ function validateItem() {
 
 
   $('#tBodyItemList').find('tr').each(function() {
-    //if($(this).find('td').eq(6).find('#deviceCode').length ==1)
-    // alert($(this).children('td').attr('id'));
-    // alert($(this).attr("id"))
-    // alert($(this).children().find("input").eq(0).val())
-    // alert($(this).children().find("input").eq(1).attr("id"))
-    // alert($(this).children().find("input").eq(1).val())
-
-
-
-    if ($(this).children().find("input").eq(1).val() !== "0") {
-      itemArray.push({
-        "id": $(this).attr("id"),
-        "itemName": $(this).children().find("input").eq(0).val(),
-        "price": $(this).children().find("input").eq(1).val(),
-        "minQty": $(this).children().find("input").eq(2).val()
+      if ($(this).children().find("input").eq(1).val() !== "0") {
+        itemArray.push({
+          "id": $(this).attr("id"),
+          "itemName": $(this).children().find("input").eq(0).val(),
+          "price": $(this).children().find("input").eq(1).val(),
+          "minQty": $(this).children().find("input").eq(2).val()
       });
     }
 
@@ -60,26 +51,8 @@ function validateItem() {
 
     finalData = {
       "data": itemArray
-    };
-
-    // $("#tBodyItemList").children().find("input").val()
+    };    
   });
-  // alert(itemArray[0].price);
-  // alert(itemArray[1].price);
 
-  // alert(JSON.stringify(finalData));
-  //
-  //
-  // var url = "/saveFarmerItemList";
-  // $.ajax({
-  //                 url: url,
-  //                 type: 'POST',
-  //                 data: JSON.stringify(finalData),
-  //                 dataType: 'json',
-  //                 success: function(response){
-  //                     // selecting values from response Object
-  //
-  //                 }
-  //             });
   return true;
 }

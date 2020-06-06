@@ -1,12 +1,15 @@
 <%- include("partials/header") -%>
-<h1><%=farmer.username%> Order List</h1>
-
+<div class="box" id="heading">
+<h1><%=farmer%> Order List</h1>
+</div>
 
 <!-- iterate orderlist -->
 <div class="container-fluid" >
-  <% farmer.orderList.forEach((order, index) => { %>
+  <% orderList.forEach((order, index) => { %>
     <form class="" action="/updateOrder" method="post" >
-      <input type="text" name="orderId" value="<%=order._id%>">
+      <input type="hidden" name="orderId" value="<%=order._id%>">
+      <input type="hidden" name="farmerName" value="<%=farmer.username%>">
+
       <table >
         <div class="" style="text-align:center">
           <br>
@@ -27,15 +30,9 @@
             <td><label for="">  <%=order.customerName %> </label></td>
             <td><label for="">  <%=order.customerMobile %> </label></td>
             <td><label for="">  <%=order.society %> </label></td>
-            <td><button type="button" class="btn btn-primary" name="button">Mark as Delivered</button></td>
+            <td><button type="submit" class="btn btn-primary" name="button">Mark as Delivered</button></td>
           </tr>
-          <!-- <tr> -->
 
-          <!-- </tr> -->
-          <tr>
-
-
-          </tr>
           <tr>
             <td><b> # </b></td>
             <td><b> Item Name </b></td>
@@ -52,25 +49,11 @@
               <td><%=orderDetail.purchaseQty %></td>
             </tr>
             <br>
-
             <%  }); %>
-
       </table>
-
-
-
     </form>
-
-
-
-
-
 <%  }); %>
-
 </div>
-
-
-
 
 
 <%- include("partials/footer") -%>
