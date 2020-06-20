@@ -4,16 +4,11 @@
 <!-- <a class="btn btn-dark btn-lg" href="/createShop" role="button">Create your Shop</a> -->
 <a class="btn btn-dark btn-lg" href="/orders/<%=farmerName%>" role="button" > View Orders </a>
 <a class="btn btn-dark btn-lg" href="/reset/<%=farmerName%>" role="button" > Reset Selling Items </a>
-
+<h2 class="alignCenter">Enter prices and min quantity for the items you want to sell  </h2>
 <div class="">
-
-
 <form action="/saveFarmerItemList" method="POST" onsubmit="return validateItem()">
   <input type="hidden" id="data" name="data" value="">
   <input type="hidden" id="farmerName" name="farmerName" value="<%=farmerName%>">
-
-
-
 
     <table class="table">
         <thead>
@@ -54,8 +49,6 @@
 
                     </tr>
                 <% }) %>
-
-
                 <% } %>
             </tbody>
 
@@ -64,7 +57,5 @@
     <button id="btn"  class="btn btn-dark">Submit</button>
 </form>
 </div>
-
-
 
   <%- include("partials/footer") -%>

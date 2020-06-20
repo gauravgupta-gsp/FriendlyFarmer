@@ -1,7 +1,9 @@
 /* body {
     background-color:  #80ff80;
 } */
-
+.red {
+  color:red;
+}
 h1 {
 
   background-color: #A683E3;
@@ -16,6 +18,10 @@ h3 {
 
 body {
     background-color: #E8ECEF;
+  }
+
+  .alignCenter {
+    text-align: center;
   }
 
   .centered {

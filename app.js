@@ -15,8 +15,6 @@ const {
   parse
 } = require("querystring");
 
-
-
 const app = express();
 // app.use(cors());
 // const port = 3001;
@@ -134,7 +132,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  res.render("register",{"errorMessage":""});
 });
 
 app.get("/login", (req, res) => {
@@ -478,7 +476,10 @@ app.post("/register", function(req, res) {
   }, req.body.password, function(err, user) {
     if (err) {
       console.log(err);
-      res.redirect("/register");
+      // res.redirect("/register");
+      res.render("register", {
+        errorMessage: "A user with the given username is already registered"
+      });
     } else {
       passport.authenticate("local")(req, res, function() {
         console.log("registed");
