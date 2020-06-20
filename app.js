@@ -160,11 +160,14 @@ app.post("/placeOrder", (req, res) => {
   let customerSociety = req.body.customerSociety;
   let customerMobile = req.body.customerMobile;
 
+  console.log(dataObject);
+
   Farmer.findOne({
     username: farmerName
   }, (err, foundFarmer) => {
     if (!err && foundFarmer) {
 
+      let orderValue =0;
       const orderDetailsList = [];
       let purchaseOrder = new Order({
         farmerName:foundFarmer.username,
@@ -176,8 +179,11 @@ app.post("/placeOrder", (req, res) => {
         orderDetail: []
 
       });
+
       dataObject.forEach(function(item) {
         console.log(item.id + " " + item.itemName + " " + item.price + " " + item.purchaseQty);
+
+        orderValue += (item.price * item.purchaseQty);
 
         let currentOrder = new OrderDetail({
           itemId: item.id,
@@ -191,9 +197,9 @@ app.post("/placeOrder", (req, res) => {
 
         currentOrder.save(err => {
           if (err) {
-            console.log("error while saveing order details " + err);
+            console.log("error while saving order details " + err);
           } else {
-            console.log("oreder details  saved ");
+            console.log("order details  saved ");
           }
         });
       });
@@ -201,7 +207,7 @@ app.post("/placeOrder", (req, res) => {
       purchaseOrder.orderDetail = orderDetailsList;
       purchaseOrder.save(err => {
         if (err) {
-          console.log("error while saveing purchaseOrder " + err);
+          console.log("error while saving purchaseOrder " + err);
         } else {
           console.log("p o saved ");
         }
@@ -214,14 +220,16 @@ app.post("/placeOrder", (req, res) => {
             message: "failure",
             customerName: customerName,
             orderReceived: dataObject,
-            farmer: foundFarmer
+            farmer: foundFarmer,
+            orderValue:orderValue
           });
         } else {
           res.render("orderConfirmation", {
-            message: "failure",
+            message: "Success",
             customerName: customerName,
             orderReceived: dataObject,
-            farmer: foundFarmer
+            farmer: foundFarmer,
+            orderValue:orderValue
           });
         }
       });
