@@ -39,6 +39,7 @@ app.use(passport.session());
 
 
 // const mongoUrl = "mongodb://localhost:27017/FarmerDB"
+
 const urlAtlas = "mongodb+srv://admin-gaurav:Rssbdb@1@cluster0-4uxnp.mongodb.net/farmerDB?retryWrites=true&w=majority";
 mongoose.connect(urlAtlas, {
   useNewUrlParser: true,
