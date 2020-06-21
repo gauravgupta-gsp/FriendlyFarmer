@@ -81,3 +81,6 @@ a { color: #FFF; }
   input[type="checkbox"] {
     margin: 20px;
   }
+button {
+  margin-top: 20px;
+}

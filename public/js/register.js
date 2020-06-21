@@ -18,6 +18,22 @@ function nospaces(t){
   }
 }
 
+function calculate() {
+
+  let total =0;
+  $('#tBodyItemList').find('tr').each(function() {
+    if ($(this).children().find("input").eq(3).val() !== "0") {
+
+      let itemPrice = $(this).children().find("input").eq(1).val();
+      let itemQuantity = $(this).children().find("input").eq(3).val();
+
+      total += (itemPrice * itemQuantity);
+      console.log(total);
+    }
+  });
+  $("#orderTotal").val(total);
+  
+}
 function validateOrder() {
   var itemArray = [];
   $('#tBodyItemList').find('tr').each(function() {

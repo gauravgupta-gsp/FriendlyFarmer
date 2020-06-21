@@ -84,6 +84,7 @@ const orderSchema = new mongoose.Schema({
   customerMobile: String,
   society: String,
   isDelivered: Boolean,
+  total:Number,
   orderDetail: [orderDetailSchema]
 });
 
@@ -159,15 +160,16 @@ app.post("/placeOrder", (req, res) => {
   let customerName = req.body.customerName;
   let customerSociety = req.body.customerSociety;
   let customerMobile = req.body.customerMobile;
+  let total= req.body.orderTotal;
 
-  console.log(dataObject);
+
 
   Farmer.findOne({
     username: farmerName
   }, (err, foundFarmer) => {
     if (!err && foundFarmer) {
 
-      let orderValue =0;
+      // let orderValue =0;
       const orderDetailsList = [];
       let purchaseOrder = new Order({
         farmerName:foundFarmer.username,
@@ -176,14 +178,14 @@ app.post("/placeOrder", (req, res) => {
         customerMobile: customerMobile,
         society: customerSociety,
         isDelivered: false,
+        total:total,
         orderDetail: []
 
       });
 
       dataObject.forEach(function(item) {
-        console.log(item.id + " " + item.itemName + " " + item.price + " " + item.purchaseQty);
+        // console.log(item.id + " " + item.itemName + " " + item.price + " " + item.purchaseQty);
 
-        orderValue += (item.price * item.purchaseQty);
 
         let currentOrder = new OrderDetail({
           itemId: item.id,
@@ -219,31 +221,31 @@ app.post("/placeOrder", (req, res) => {
           res.render("orderConfirmation", {
             message: "failure",
             customerName: customerName,
-            orderReceived: dataObject,
+            orderReceived: orderDetailsList,
             farmer: foundFarmer,
-            orderValue:orderValue
+            orderValue:total
           });
         } else {
           res.render("orderConfirmation", {
             message: "Success",
             customerName: customerName,
-            orderReceived: dataObject,
+            orderReceived: orderDetailsList,
             farmer: foundFarmer,
-            orderValue:orderValue
+            orderValue:total
           });
         }
       });
 
 
     } else {
-      console.log("match found" + foundFarmer);
+      // console.log("match found" + foundFarmer);
       res.render("shop", {
         farmer: foundFarmer
       });
       // res.redirect("/"+username);
     }
   });
-  console.log(dataObject);
+
 
 });
 
