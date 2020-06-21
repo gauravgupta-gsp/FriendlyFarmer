@@ -1,8 +1,37 @@
 <%- include("partials/header") -%>
+<h1>List of available shops</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <strong>Farmer Name</strong>
+    </div>
+    <div class="col-sm-4">
+      <strong>Farmer Mobile</strong>
+    </div>
+    <div class="col-sm-4">
+      <strong>Shop</strong>
+    </div>
+  </div>
+  <br>
+  <% farmerList.forEach( (farmer, index) => { %>
+    <div class="row">
+      <div class="col-sm-4">
+        <%=farmer.username%>
+      </div>
+      <div class="col-sm-4">
+        <%=farmer.mobile%>
+      </div>
+      <div class="col-sm-4">
+        <a class="" href="/<%=farmer.username%>" role="button">Visit Shop</a>
+      </div>
 
-<% farmerList.forEach( (farmer, index) => { %>
-  <a class="btn btn-dark btn-lg" href="/<%=farmer.username%>" role="button"><%=farmer.username%></a>
+    </div>
 
-<%}); %>
+
+  <%}); %>
+
+</div>
+
+
 
 <%- include("partials/footer") -%>
