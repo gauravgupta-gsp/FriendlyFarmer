@@ -19,6 +19,9 @@ h3 {
 body {
     background-color: #E8ECEF;
   }
+a {
+  margin-right: 10px;
+}
 
   .alignCenter {
     text-align: center;
