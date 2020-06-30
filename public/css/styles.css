@@ -2,10 +2,10 @@
     background-color:  #80ff80;
 } */
 .red {
-  color:red;
+  color: red;
 }
-h1 {
 
+h1 {
   background-color: #A683E3;
   text-align: center;
   color: #fff;
@@ -17,73 +17,89 @@ h3 {
 }
 
 body {
-    background-color: #E8ECEF;
-  }
+  background-color: #E8ECEF;
+}
+
 a {
   margin-right: 10px;
 }
 
-  .alignCenter {
-    text-align: center;
-  }
+.alignCenter {
+  text-align: center;
+}
 
-  .centered {
-      padding-top: 200px;
-      text-align: center;
-  }
+.centered {
+  padding-top: 200px;
+  text-align: center;
+}
 
-  .secret-text {
-    text-align: center;
-    font-size: 2rem;
-    color: #fff;
-    background-color: #000;
+.secret-text {
+  text-align: center;
+  font-size: 2rem;
+  color: #fff;
+  background-color: #000;
+}
+
+.round_image {
+  border-radius: 100%;
+}
+
+@media (max-width: 1028px) {
+  .round_image {
+    margin-top: 20px;
+    display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
   }
+}
 
 table {
   border: 1px solid black;
-  cellpadding:"15"
+  cellpadding: "15"
 }
-   th {
-    border: 1px solid black;
-  }
 
-  td {
-    padding: 10px;
-    border: 1px solid black;
-  }
+th {
+  border: 1px solid black;
+}
 
-  form {
+td {
+  padding: 10px;
+  border: 1px solid black;
+}
+
+form {
   margin: 0 auto;
-  width:650px;
-  }
+  width: 650px;
+}
 
-  footer {
-    margin-top: 50px;
-    text-align: center;
-    background-color: #77B81E;
-    color: white;
-  }
+footer {
+  margin-top: 50px;
+  text-align: center;
+  background-color: #77B81E;
+  color: white;
+}
 
+.item {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #F1F1F1;
+}
 
-  .item {
-    min-height: 70px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #F1F1F1;
-  }
+.item:last-child {
+  border-bottom: 0;
+}
 
-  .item:last-child {
-    border-bottom: 0;
-  }
+input:checked+p {
+  text-decoration: line-through;
+  text-decoration-color: #A683E3;
+}
 
-  input:checked+p {
-    text-decoration: line-through;
-    text-decoration-color: #A683E3;
-  }
+input[type="checkbox"] {
+  margin: 20px;
+}
 
-  input[type="checkbox"] {
-    margin: 20px;
-  }
 button {
   margin-top: 20px;
 }
