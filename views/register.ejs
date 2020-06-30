@@ -3,38 +3,31 @@
   <h1>Register</h1>
 
   <div class="row">
-    <div class="col-sm-8">
+    <div class="col-lg-8">
       <div class="card">
         <div class="card-body">
 
           <%if (errorMessage) { %>
-            <h3 class="red"><%=errorMessage%></h3>
+          <h3 class="red"><%=errorMessage%></h3>
           <% } %>
 
-
-
-          <!-- Makes POST request to /register route -->
           <form action="/register" method="POST">
-          <!-- <form  action="https://webhook.site/7e82952d-a06b-41bd-8738-0e228487ae74" method="post"> -->
-
-
-
             <div class="form-group">
               <label for="username">Your Login Name without Spaces</label>
-                <input type="text" placeholder="Your Full Name " class="form-control"  id="username" name="username" minlength="5"  onkeyup="nospaces(this)" required />
+              <input type="text" placeholder="Your Full Name " class="form-control" id="username" name="username" minlength="5" onkeyup="nospaces(this)" required />
             </div>
 
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" placeholder="Enter Password" class="form-control" id="password" name="password" minlength="5"  required />
+              <label for="password">Password</label>
+              <input type="password" placeholder="Enter Password" class="form-control" id="password" name="password" minlength="5" required />
             </div>
             <div class="form-group">
-                <label for="repeatPassword">Repeat Password</label>
-                <input type="password" placeholder="Repeat Password" class="form-control" id="repeatPassword" name="repeatPassword" minlength="5"  required />
+              <label for="repeatPassword">Repeat Password</label>
+              <input type="password" placeholder="Repeat Password" class="form-control" id="repeatPassword" name="repeatPassword" minlength="5" required />
             </div>
             <div class="form-group">
-                <label for="mobile">Mobile Number</label>
-                <input type="number" placeholder="Enter Mobile Number" class="form-control" id="mobile" name="mobile" minlength="10" maxlength="10" required />
+              <label for="mobile">Mobile Number</label>
+              <input type="number" placeholder="Enter Mobile Number" class="form-control" id="mobile" name="mobile" minlength="10" maxlength="10" required />
             </div>
             <button type="submit" class="btn btn-dark btn-lg">Register Me as a Farmer</button>
 
@@ -43,27 +36,13 @@
         </div>
       </div>
     </div>
- <div class="col-sm-4">
-   <img src="/images/tree.png" class="round_image" width="400px" height="400px" alt="">
-   </div>
-    <!-- <div class="col-sm-4">
-      <div class="card social-block">
-        <div class="card-body">
-          <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
-            <i class="fab fa-google"></i>
-            Sign Up with Google
-          </a>
-        </div>
-        <div class="card-body">
-          <a class="btn btn-block btn-social btn-facebook" href="/auth/google" role="button">
-            <i class="fab fa-facebook"></i>
-            Sign Up with Google
-          </a>
-        </div>
-      </div>
-    </div> -->
+    <div class="col-lg-4">
+      <img src="/images/tree.png" class="round_image" width="400px" height="400px" alt="">
+    </div>
 
   </div>
+
+
 </div>
 
 <%- include('partials/footer') %>
