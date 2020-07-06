@@ -36,9 +36,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-// const mongoUrl = "mongodb://localhost:27017/FarmerDB"
+const mongoUrl = "mongodb://localhost:27017/FarmerDB"
 
-const mongoUrl = "mongodb+srv://admin-gaurav:Rssbdb@1@cluster0-4uxnp.mongodb.net/farmerDB?retryWrites=true&w=majority";
+// const mongoUrl = "mongodb+srv://admin-gaurav:Rssbdb@1@cluster0-4uxnp.mongodb.net/farmerDB?retryWrites=true&w=majority";
 mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -475,10 +475,49 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+app.get("/changePassword/:username",(req,res) => {
+
+const customerMobile = req.params.username;
+Customer.findOne({username:customerMobile}, (err, foundCustomer) => {
+  if(!err && foundCustomer) {
+    console.log("customer "+ foundCustomer);
+      res.render("changePassword", {customer:foundCustomer});
+  }
+  else {
+    console.log("not found customer");
+  }
+});
+});
+
+app.post("/changeCustomerPassword", (req,res)=> {
+  const username = req.body.username;
+  const password = req.body.password;
+  // update passwored.
+
+  Customer.findOne({username:username}, (err, foundCustomer) => {
+    if(!err && foundCustomer) {
+      Customer.updateOne({username:username},
+        {password:password}, (err) => {
+          if(!err) {
+            console.log("updated password");
+            res.render("customerHome", {customer:foundCustomer});
+          }
+          else {
+            console.log("issue updating password");
+          }
+        });
+
+    }
+  });
+
+});
+
+
 // app.get("/admin")
 
 app.post("/customerLogin", (req,res) => {
   const username = req.body.username;
+
   const customer = new Customer({
     mobile:req
   });
@@ -501,17 +540,12 @@ app.post("/customerSignIn", function(req, res){
     if(!err && foundCustomer) {
       if(foundCustomer.password === req.body.password) {
         res.render("customerHome", {customer:foundCustomer});
-        // Order.find({customerMobile:mobile}, (err, foundOrders) => {
-        //   if(!err && foundOrders) {
-        //     res.render
-        //     console.log(foundOrders);
-        //   }
-        // });
       }
-
     }
     else {
       console.log("customer doesnot exists");
+      res.render("customerSignIn", { errorMessage:"Customer Doesn't Exist"});
+      // res.redirect("customerSignIn");
     }
   });
 });

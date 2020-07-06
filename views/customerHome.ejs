@@ -6,7 +6,7 @@
     <h5 class="card-title">Name : <%=customer.name%></h5>
     <h5 class="card-title">Mobile: <%=customer.username%></h5>
     <h5 class="card-title">Society: <%=customer.society%></h5>
-    <a href="#" class="btn btn-primary">Change Password</a>
+    <a href="/changePassword/<%=customer.username%>" class="btn btn-primary">Change Password</a>
     <a href="customerOrders/<%=customer.username%>" class="btn btn-primary">View Orders</a>
   </div>
 </div>
