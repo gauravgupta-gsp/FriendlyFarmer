@@ -36,9 +36,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-const mongoUrl = "mongodb://localhost:27017/FarmerDB"
+// const mongoUrl = "mongodb://localhost:27017/FarmerDB"
 
-// const mongoUrl = "mongodb+srv://admin-gaurav:Rssbdb@1@cluster0-4uxnp.mongodb.net/farmerDB?retryWrites=true&w=majority";
+const mongoUrl = "mongodb+srv://admin-gaurav:Rssbdb@1@cluster0-4uxnp.mongodb.net/farmerDB?retryWrites=true&w=majority";
 mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -80,6 +80,7 @@ const OrderDetail = mongoose.model("OrderDetail", orderDetailSchema);
 const orderSchema = new mongoose.Schema({
   farmerName:String,
   farmerId:String,
+  farmerMobile:String,
   customerName: String,
   customerMobile: String,
   society: String,
@@ -100,12 +101,21 @@ const farmerSchema = new mongoose.Schema({
   orderList: [orderSchema]
 
 });
-
 farmerSchema.plugin(passportLocalMongoose);
-
 const Farmer = mongoose.model("Farmer", farmerSchema);
-
 passport.use(Farmer.createStrategy());
+
+const customerSchema = new mongoose.Schema({
+  username:String,
+  name: String,
+  password:String,
+  society:String,
+  email:String
+});
+customerSchema.plugin(passportLocalMongoose);
+const Customer = mongoose.model("Customer", customerSchema);
+passport.use(Customer.createStrategy());
+
 
 // use static serialize and deserialize of model for passport session support
 passport.serializeUser(function(user, done) {
@@ -161,32 +171,55 @@ app.post("/placeOrder", (req, res) => {
   let customerSociety = req.body.customerSociety;
   let customerMobile = req.body.customerMobile;
   let total= req.body.orderTotal;
+  let customerEmail= req.body.customerEmail;
+  if(customerEmail === "") {
+    customerEmail = customerName + customerMobile + "@gmail.com";
+  }
+  console.log("email " + customerEmail);
 
+  let existingCustomer =true;
 
+  Customer.findOne(
+    {username:customerMobile }, (err, foundCustomer) => {
+        if(!foundCustomer) {
+          existingCustomer =false;
+          const customer = new Customer({
+            name:customerName,
+            username: customerMobile,
+            password:"1234",
+            society:customerSociety,
+            email:customerEmail
+        });
+        customer.save(err => {
+          if(err) {
+            console.log("error saving customer" + err);
+          }
+          else {
+            console.log("Customer saved successfully");
+          }
+        });
+      }
+    });
 
   Farmer.findOne({
     username: farmerName
   }, (err, foundFarmer) => {
     if (!err && foundFarmer) {
-
       // let orderValue =0;
-      const orderDetailsList = [];
+      const orderDetailArray = [];
       let purchaseOrder = new Order({
         farmerName:foundFarmer.username,
         farmerId:foundFarmer._id,
+        farmerMobile:foundFarmer.mobile,
         customerName: customerName,
         customerMobile: customerMobile,
         society: customerSociety,
         isDelivered: false,
         total:total,
         orderDetail: []
-
       });
 
       dataObject.forEach(function(item) {
-        // console.log(item.id + " " + item.itemName + " " + item.price + " " + item.purchaseQty);
-
-
         let currentOrder = new OrderDetail({
           itemId: item.id,
           itemName: item.itemName,
@@ -194,7 +227,7 @@ app.post("/placeOrder", (req, res) => {
           purchaseQty: item.purchaseQty
         });
 
-        orderDetailsList.push(currentOrder);
+        orderDetailArray.push(currentOrder);
 
 
         currentOrder.save(err => {
@@ -206,7 +239,7 @@ app.post("/placeOrder", (req, res) => {
         });
       });
 
-      purchaseOrder.orderDetail = orderDetailsList;
+      purchaseOrder.orderDetail = orderDetailArray;
       purchaseOrder.save(err => {
         if (err) {
           console.log("error while saving purchaseOrder " + err);
@@ -219,19 +252,24 @@ app.post("/placeOrder", (req, res) => {
       foundFarmer.save(err => {
         if (!err) {
           res.render("orderConfirmation", {
-            message: "failure",
+            message: "success",
             customerName: customerName,
-            orderReceived: orderDetailsList,
+            customerMobile:customerMobile,
+            orderReceived: orderDetailArray,
             farmer: foundFarmer,
-            orderValue:total
+            orderValue:total,
+            purchaseOrder:purchaseOrder,
+            existingCustomer:existingCustomer
           });
         } else {
           res.render("orderConfirmation", {
-            message: "Success",
+            message: "failure",
             customerName: customerName,
-            orderReceived: orderDetailsList,
+            orderReceived: orderDetailArray,
             farmer: foundFarmer,
-            orderValue:total
+            orderValue:total,
+            purchaseOrder:purchaseOrder,
+            existingCustomer:existingCustomer
           });
         }
       });
@@ -409,6 +447,28 @@ Farmer.findOne({username:farmerName}, (err, foundFarmer) => {
 
 });
 
+app.get("/customerOrders/:username", (req,res) => {
+
+const customerMobile = req.params.username;
+Customer.findOne({username:customerMobile}, (err, foundCustomer) => {
+
+  if(!err && foundCustomer) {
+    console.log("customer "+ foundCustomer);
+    Order.find({customerMobile:customerMobile, isDelivered:false}, (err, orderList) => {
+      // console.log("order list for "+ orderList);
+      res.render("customerOrders", {customer:foundCustomer, orderList:orderList});
+    });
+
+  }
+  else {
+    console.log("not found customer");
+  }
+
+
+
+});
+
+});
 
 app.get("/logout", (req, res) => {
   req.logout();
@@ -417,6 +477,44 @@ app.get("/logout", (req, res) => {
 
 // app.get("/admin")
 
+app.post("/customerLogin", (req,res) => {
+  const username = req.body.username;
+  const customer = new Customer({
+    mobile:req
+  });
+});
+
+
+app.get("/customerSignIn", function(req, res){
+  res.render("customerSignIn");
+});
+
+app.post("/customerSignIn", function(req, res){
+  const mobile = req.body.mobile;
+
+  const customer = new Customer({
+    mobile:req.body.mobile,
+    password:req.body.password
+  });
+
+  Customer.findOne({username:req.body.mobile}, (err, foundCustomer) => {
+    if(!err && foundCustomer) {
+      if(foundCustomer.password === req.body.password) {
+        res.render("customerHome", {customer:foundCustomer});
+        // Order.find({customerMobile:mobile}, (err, foundOrders) => {
+        //   if(!err && foundOrders) {
+        //     res.render
+        //     console.log(foundOrders);
+        //   }
+        // });
+      }
+
+    }
+    else {
+      console.log("customer doesnot exists");
+    }
+  });
+});
 app.post("/login", (req, res) => {
   const username = req.body.username;
   console.log("username " + username);

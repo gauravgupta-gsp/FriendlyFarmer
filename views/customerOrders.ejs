@@ -1,0 +1,59 @@
+<%- include("partials/header") -%>
+<h3>Pending orders for <%=customer.name%></h3>
+
+
+
+<div class="container-fluid" >
+  <% orderList.forEach((order, index) => { %>
+    <form class="" action="/updateOrder" method="post" >
+
+
+      <table class="table">
+        <div class="" style="text-align:center">
+          <br>
+          <b>Order No <%= index + 1%></b>
+
+        </div>
+
+        <tr>
+          <thead>
+            <th>Farmer Name</th>
+            <th>Farmer Mobile</th>
+            <th>Order Total</th>
+            <th>Order Status</th>
+          </thead>
+        </tr>
+
+          <tr id="<%=order._id%>">
+
+            <td><label for="">  <%=order.farmerName %> </label></td>
+            <td><label for="">  <%=order.farmerMobile %> </label></td>
+            <td><label for="">  <%=order.total %> </label></td>
+            <td><label for="">  Pending </label></td>
+            <td><button type="button" class="btn btn-primary" name="button">Edit</button></td>
+          </tr>
+
+          <tr>
+            <thead>
+              <th>#</th>
+              <th>Item Name</th>
+              <th>Item Price</th>
+              <th>Order Quantity</th>
+            </thead>
+
+          </tr>
+
+          <%  order.orderDetail.forEach((orderDetail,index) => { %>
+
+            <tr>
+              <td><%= index + 1%></td>
+              <td><%=orderDetail.itemName %></td>
+              <td><%=orderDetail.price %></td>
+              <td><%=orderDetail.purchaseQty %></td>
+            </tr>
+            <br>
+            <%  }); %>
+      </table>
+    </form>
+<%  }); %>
+</div>
