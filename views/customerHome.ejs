@@ -1,0 +1,15 @@
+<%- include("partials/header") -%>
+<div class="card" style="width: 23rem;">
+  <img src="/images/tree.png" class="card-img-top" alt="...">
+  <div class="card-body">
+
+    <h5 class="card-title">Name : <%=customer.name%></h5>
+    <h5 class="card-title">Mobile: <%=customer.username%></h5>
+    <h5 class="card-title">Society: <%=customer.society%></h5>
+    <a href="#" class="btn btn-primary">Change Password</a>
+    <a href="customerOrders/<%=customer.username%>" class="btn btn-primary">View Orders</a>
+  </div>
+</div>
+
+
+<%- include("partials/footer") -%>

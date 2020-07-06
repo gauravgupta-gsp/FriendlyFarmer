@@ -1,7 +1,19 @@
 <%- include("partials/header") -%>
-<h1>Dear <%=customerName%> , your order has been successfully placed with <%=farmer.username%></h1>
+<%if (!existingCustomer) { %>
+  <h1>Thank You for your order, <%=customerName%>. We have secured your order with below details:<br>
+    UserName:  <%=customerMobile%> <br>
+    Password: 1234 <br>
+  <%} else {%>
+
+    Welcome back <%=customerName%>
+
+    <%}%>
+  Your order has been successfully placed with <strong><%=farmer.username%></strong></h1>
 <h3>You can get in touch with him on <%=farmer.mobile%></h3>
 <h3>Total bill of your order is : Rs <%=orderValue%></h3>
+To Login to your account or to view your order,  visit <a href="/customerSignIn">Link</a>
+
+<%=message%>
 
 
 <%- include("partials/footer") -%>
