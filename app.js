@@ -179,6 +179,8 @@ app.post("/placeOrder", (req, res) => {
 
   let existingCustomer =true;
 
+  let recentOrder ;
+
   Customer.findOne(
     {username:customerMobile }, (err, foundCustomer) => {
         if(!foundCustomer) {
@@ -240,11 +242,12 @@ app.post("/placeOrder", (req, res) => {
       });
 
       purchaseOrder.orderDetail = orderDetailArray;
-      purchaseOrder.save(err => {
+      purchaseOrder.save((err,order) => {
         if (err) {
           console.log("error while saving purchaseOrder " + err);
         } else {
-          console.log("p o saved ");
+          console.log("p o saved " );
+          recentOrder = order;
         }
       });
 
@@ -258,7 +261,7 @@ app.post("/placeOrder", (req, res) => {
             orderReceived: orderDetailArray,
             farmer: foundFarmer,
             orderValue:total,
-            purchaseOrder:purchaseOrder,
+            purchaseOrder:recentOrder,
             existingCustomer:existingCustomer
           });
         } else {
@@ -268,7 +271,7 @@ app.post("/placeOrder", (req, res) => {
             orderReceived: orderDetailArray,
             farmer: foundFarmer,
             orderValue:total,
-            purchaseOrder:purchaseOrder,
+            purchaseOrder:recentOrder,
             existingCustomer:existingCustomer
           });
         }
@@ -475,6 +478,20 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+app.get("/modifyCustomerOrders/:orderId/", (req,res) => {
+   const orderId = req.params.orderId;
+   // const username= req.params.username;
+   // console.log(orderId );
+   // check if order id exists/
+   Order.findOne({_id:orderId}, (err, foundOrder) => {
+     if(!err && foundOrder) {
+       res.render("order", {order:foundOrder});
+     }
+   });
+
+  // show that order to customer and when he updates it update in db.
+});
+
 app.get("/changePassword/:username",(req,res) => {
 
 const customerMobile = req.params.username;
@@ -500,7 +517,7 @@ app.post("/changeCustomerPassword", (req,res)=> {
         {password:password}, (err) => {
           if(!err) {
             console.log("updated password");
-            res.render("customerHome", {customer:foundCustomer});
+            res.render("customerHome", {customer:foundCustomer, message:"Password updated Successfully"});
           }
           else {
             console.log("issue updating password");
@@ -539,7 +556,9 @@ app.post("/customerSignIn", function(req, res){
   Customer.findOne({username:req.body.mobile}, (err, foundCustomer) => {
     if(!err && foundCustomer) {
       if(foundCustomer.password === req.body.password) {
-        res.render("customerHome", {customer:foundCustomer});
+        res.render("customerHome", {customer:foundCustomer, message:""});
+      }else {
+
       }
     }
     else {

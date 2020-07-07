@@ -6,6 +6,7 @@
 <div class="container-fluid" >
   <% orderList.forEach((order, index) => { %>
     <form class="" action="/updateOrder" method="post" >
+      <input type="hidden" name="orderId" value="<%=order._id%>">
       <table class="table">
         <div class="" style="text-align:center">
           <br>
@@ -28,7 +29,8 @@
             <td><label for="">  <%=order.farmerMobile %> </label></td>
             <td><label for="">  <%=order.total %> </label></td>
             <td><label for="">  Pending </label></td>
-            <td><button type="button" class="btn btn-primary" name="button">Edit</button></td>
+            <!-- <td><button type="button" class="btn btn-primary" name="button">Edit</button></td> -->
+            <td><a href="/customers/<%=order.customerMobile%>/orders/<%=order._id%>">Edit Order</a></td>
           </tr>
 
           <tr>
