@@ -36,9 +36,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-const mongoUrl = "mongodb://localhost:27017/FarmerDB"
+// const mongoUrl = "mongodb://localhost:27017/FarmerDB"
 
-// const mongoUrl = "mongodb+srv://admin-gaurav:Rssbdb@1@cluster0-4uxnp.mongodb.net/farmerDB?retryWrites=true&w=majority";
+const mongoUrl = "mongodb+srv://admin-gaurav:Rssbdb@1@cluster0-4uxnp.mongodb.net/farmerDB?retryWrites=true&w=majority";
 mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -150,6 +150,23 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
+app.post("/deleteOrder", (req,res) => {
+  console.log("deleting order");
+  const orderId= req.body.orderId;
+  let farmer ;
+  Order.findOne({_id:orderId}, (err, foundOrder)=> {
+    farmerName = foundOrder.farmerName;
+  });
+  Order.deleteOne({_id:orderId}, (err, result) => {
+    if(result.deletedCount > 0) {
+      // res.send("Successfully deleted order");
+      res.render("orderDeletionConfirmation", {farmerName:farmerName});
+    }
+    else {
+      res.send("No matching order found to delete");
+    }
+  });
+});
 app.post("/updateOrder", (req,res)=> {
   const orderId= req.body.orderId;
   const farmerName = req.body.farmerName;
@@ -517,7 +534,8 @@ app.post("/changeCustomerPassword", (req,res)=> {
         {password:password}, (err) => {
           if(!err) {
             console.log("updated password");
-            res.render("customerHome", {customer:foundCustomer, message:"Password updated Successfully"});
+            // res.render("customerHome", {customer:foundCustomer, message:"Password updated Successfully"});
+            res.render("customerSignIn");
           }
           else {
             console.log("issue updating password");

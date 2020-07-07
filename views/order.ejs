@@ -1,3 +1,60 @@
 <%- include("partials/header") -%>
 <%=order%>
+
+<div class="container-fluid" >
+
+    <form class="" action="/deleteOrder" method="post" >
+      <input type="hidden" name="orderId" value="<%=order._id%>">
+      <table class="table">
+        <div class="" style="text-align:center">
+          <br>
+        </div>
+        <tr>
+          <thead>
+            <th>Farmer Name</th>
+            <th>Farmer Mobile</th>
+            <th>Order Total</th>
+            <th>Order Status</th>
+          </thead>
+        </tr>
+
+          <tr id="<%=order._id%>">
+
+            <td><label for="">  <%=order.farmerName %> </label></td>
+            <td><label for="">  <%=order.farmerMobile %> </label></td>
+            <td><label for="">  <%=order.total %> </label></td>
+            <td><label for="">  Pending </label></td>
+            <td><button type="submit" class="btn btn-primary" name="button">Delete Order</button></td>
+
+          </tr>
+
+          <tr>
+            <thead>
+              <th>#</th>
+              <th>Item Name</th>
+              <th>Item Price</th>
+              <th>Order Quantity</th>
+            </thead>
+
+          </tr>
+
+          <%  order.orderDetail.forEach((orderDetail,index) => { %>
+
+            <tr>
+              <td><%= index + 1%></td>
+              <td><%=orderDetail.itemName %></td>
+              <td><%=orderDetail.price %></td>
+              <td><%=orderDetail.purchaseQty %></td>
+            </tr>
+            <br>
+            <%  }); %>
+            <tr>
+              <td colspan="2">Order Total</td>
+              <td colspan="2">Rs. <%=order.total%></td>
+            </tr>
+      </table>
+    </form>
+
+</div>
+
 <%- include("partials/footer") -%>
