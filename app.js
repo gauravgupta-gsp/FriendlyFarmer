@@ -55,10 +55,6 @@ db.once("open", () => {
 });
 
 
-const itemSchema = new mongoose.Schema({
-  name: String
-});
-
 const sellingItemSchema = new mongoose.Schema({
   farmerName:String,
   farmerId:String,
@@ -67,7 +63,6 @@ const sellingItemSchema = new mongoose.Schema({
   price: Number,
   minQty: Number
 });
-
 const orderDetailSchema = new mongoose.Schema({
   itemId: String,
   itemName: String,
@@ -89,10 +84,6 @@ const orderSchema = new mongoose.Schema({
   orderDetail: [orderDetailSchema]
 });
 
-const Order = mongoose.model("Order", orderSchema);
-
-const SellingItem = mongoose.model("SellingItem", sellingItemSchema);
-
 const farmerSchema = new mongoose.Schema({
   name: String,
   mobile: String,
@@ -105,6 +96,8 @@ farmerSchema.plugin(passportLocalMongoose);
 const Farmer = mongoose.model("Farmer", farmerSchema);
 passport.use(Farmer.createStrategy());
 
+
+
 const customerSchema = new mongoose.Schema({
   username:String,
   name: String,
@@ -112,9 +105,9 @@ const customerSchema = new mongoose.Schema({
   society:String,
   email:String
 });
-customerSchema.plugin(passportLocalMongoose);
+// customerSchema.plugin(passportLocalMongoose);
 const Customer = mongoose.model("Customer", customerSchema);
-passport.use(Customer.createStrategy());
+// passport.use(Customer.createStrategy());
 
 
 // use static serialize and deserialize of model for passport session support
@@ -125,6 +118,17 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
+
+const itemSchema = new mongoose.Schema({
+  name: String
+});
+
+
+
+const Order = mongoose.model("Order", orderSchema);
+
+const SellingItem = mongoose.model("SellingItem", sellingItemSchema);
+
 
 const Item = mongoose.model("Item", itemSchema);
 
@@ -368,9 +372,7 @@ app.post("/saveFarmerItemList", (req, res) => {
         sellingItem.save();
       });
 
-      Farmer.updateOne({
-        username: farmerName
-      }, {
+      Farmer.updateOne({username: farmerName}, {
         sellingList: itemList
       }, function(err) {
         if (!err) {
@@ -382,7 +384,7 @@ app.post("/saveFarmerItemList", (req, res) => {
               res.render("welcome", {
                 listExist: true,
                 farmerName: farmerName,
-                itemList: [],
+                itemList: itemList,
                 farmer: foundFarmer
               });
             }
@@ -395,7 +397,7 @@ app.post("/saveFarmerItemList", (req, res) => {
 
 
     } else {
-      console.log("match found" + foundFarmer);
+      console.log("farmer not found" );
       res.render("shop", {
         farmer: foundFarmer
       })
@@ -603,11 +605,13 @@ app.post("/login", (req, res) => {
 
         Farmer.findOne({username: username}, (err, foundFarmer) => {
           if (!err && foundFarmer) {
-            console.log(foundFarmer.sellingList.length);
+            console.log("selling list length  "+ foundFarmer.sellingList.length);
             // console.log(foundFarmer.sellingList);
             // console.log(JSON.parse(foundFarmer.sellingList));
             if (foundFarmer.sellingList.length > 0) {
               // selling list
+
+              console.log("farmer selling list length " + farmer.sellingList.length);
 
               res.render("welcome", {
                 listExist: true,
@@ -623,11 +627,13 @@ app.post("/login", (req, res) => {
                   Item.insertMany(defaultItems, (err) => {
                     if (err) {
                       console.log(err);
+
                     } else {
                       console.log("Successfully inserted items in db");
                     }
                   });
                 }
+                console.log("found items length "+ foundItems.length);
                 res.render("welcome", {
                   listExist: false,
                   farmerName: username,
@@ -641,7 +647,7 @@ app.post("/login", (req, res) => {
           }
         });
       });
-    }
+    }``
   });
 });
 
@@ -668,18 +674,21 @@ app.post("/register", function(req, res) {
             Item.insertMany(defaultItems, (err) => {
               if (err) {
                 console.log(err);
+
               } else {
                 console.log("Successfully inserted items in db");
+
               }
             });
           }
+          res.render("success", {username:username});
 
-          res.render("welcome", {
-            farmerName: username,
-            itemList: foundItems,
-            listExist: false,
-            message:"Enter price and Min Quantity for items you sell.."
-          });
+          // res.render("welcome", {
+          //   farmerName: username,
+          //   itemList: foundItems,
+          //   listExist: false,
+          //   message:"Enter price and Min Quantity for items you sell.."
+          // });
         });
 
         console.log("registerd");

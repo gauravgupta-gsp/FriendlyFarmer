@@ -9,7 +9,7 @@
 <form action="/saveFarmerItemList" method="POST" onsubmit="return validateItem()">
   <input type="hidden" id="data" name="data" value="">
   <input type="hidden" id="farmerName" name="farmerName" value="<%=farmerName%>">
-
+<%=listExist%>
     <table class="table">
         <thead>
             <tr>
@@ -43,9 +43,9 @@
 
                         <td><input type="text" class="form-control" name="itemName" value="<%= item.itemName  %>"  readonly/></td>
 
-                        <td><input type="number"       class="form-control" name="price" value="<%= item.price  %>" /></td>
+                        <td><input type="number"       class="form-control" name="price" value="<%= item.price  %>" readonly/></td>
 
-                        <td><input type="number" class="form-control" name="minQuantity"   value="<%= item.minQty  %>" /></td>
+                        <td><input type="number" class="form-control" name="minQuantity"   value="<%= item.minQty  %>" readonly/></td>
 
                     </tr>
                 <% }) %>
@@ -54,7 +54,10 @@
 
         </thead>
     </table>
+
+      <%if (!listExist) { %>
     <button id="btn"  class="btn btn-dark">Submit</button>
+    <%}%>
 </form>
 </div>
 
