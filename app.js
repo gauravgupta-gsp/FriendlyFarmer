@@ -681,7 +681,7 @@ app.post("/register", function(req, res) {
               }
             });
           }
-          res.render("success", {username:username});
+          res.render("successRegister", {username:username});
 
           // res.render("welcome", {
           //   farmerName: username,
